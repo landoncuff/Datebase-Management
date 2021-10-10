@@ -236,7 +236,7 @@ VALUES
 (10019, 102, 4, '2/7/2019', 680731);
 GO
 
--- Review October 7
+-- Review October 7 in class 
 
 SELECT * FROM Owners;
 -- Write SQL statement that will add a new homeowner to the Owners table. 

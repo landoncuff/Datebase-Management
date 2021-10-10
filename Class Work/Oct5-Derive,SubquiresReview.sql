@@ -70,26 +70,26 @@ WHERE ISBN IN (
 
 
 
-SELECT CONCAT('Flight number ', f.FlightID, ' ', IIF(f.DepartDateTime > getDate(), 'will fly from', 'flew from'), ' ',
-CONCAT(aiDepart.AirportCity, ', ', aiDepart.AirportState), ' ', '(',aiDepart.AirportCode,')', ', on', ' ', DATENAME(WEEKDAY, f.DepartDateTime), ', ',
-DATENAME(MONTH, f.DepartDateTime), ' ', DAY(f.DepartDateTime), ', ', YEAR(f.DepartDateTime), ' at ', CONVERT(varchar(5), DepartDateTime, 108), '. ',
-a.AirlineName, ' airlines'' ', CONCAT(p.Manufacturer, ' ', p.Model), ', which was last serviced on ', CONVERT(varchar, p.LastServiceDate, 107),
-', was the aircraft used for the flight. The flight will arrive in ',CONCAT(aiArr.AirportCity, ', ', aiArr.AirportState), ' (', 
-aiArr.AirportCode, '), on ', DATENAME(WEEKDAY, f.ArriveDateTime), ', ',
-DATENAME(MONTH, f.ArriveDateTime), ' ', DAY(f.ArriveDateTime), ', ', YEAR(f.ArriveDateTime), ' at ', CONVERT(varchar(5), ArriveDateTime, 108), '.')
-FROM Flights f JOIN Airports aiDepart
-ON f.DepartCode = aiDepart.AirportCode
-JOIN Airports aiArr 
-ON f.ArriveCode = aiArr.AirportCode
-JOIN Airlines a 
-ON f.AirlineID = a.AirlineID
-JOIN Planes p 
-ON f.PlaneID = p.PlaneID;
-GO
+-- SELECT CONCAT('Flight number ', f.FlightID, ' ', IIF(f.DepartDateTime > getDate(), 'will fly from', 'flew from'), ' ',
+-- CONCAT(aiDepart.AirportCity, ', ', aiDepart.AirportState), ' ', '(',aiDepart.AirportCode,')', ', on', ' ', DATENAME(WEEKDAY, f.DepartDateTime), ', ',
+-- DATENAME(MONTH, f.DepartDateTime), ' ', DAY(f.DepartDateTime), ', ', YEAR(f.DepartDateTime), ' at ', CONVERT(varchar(5), DepartDateTime, 108), '. ',
+-- a.AirlineName, ' airlines'' ', CONCAT(p.Manufacturer, ' ', p.Model), ', which was last serviced on ', CONVERT(varchar, p.LastServiceDate, 107),
+-- ', was the aircraft used for the flight. The flight will arrive in ',CONCAT(aiArr.AirportCity, ', ', aiArr.AirportState), ' (', 
+-- aiArr.AirportCode, '), on ', DATENAME(WEEKDAY, f.ArriveDateTime), ', ',
+-- DATENAME(MONTH, f.ArriveDateTime), ' ', DAY(f.ArriveDateTime), ', ', YEAR(f.ArriveDateTime), ' at ', CONVERT(varchar(5), ArriveDateTime, 108), '.')
+-- FROM Flights f JOIN Airports aiDepart
+-- ON f.DepartCode = aiDepart.AirportCode
+-- JOIN Airports aiArr 
+-- ON f.ArriveCode = aiArr.AirportCode
+-- JOIN Airlines a 
+-- ON f.AirlineID = a.AirlineID
+-- JOIN Planes p 
+-- ON f.PlaneID = p.PlaneID;
+-- GO
 
 
 
-Flight number 1001 flew from Las Vegas, NV (LAS), on Friday, March 19, 2021 at 18:50. Southwest  airlines' Embraer RJ-45, which was last serviced on Jan 17, 2021, was the aircraft used for the flight. The flight will arrive in Orlando, FL (MCO), on Friday, March 19, 2021 at 22:23.
+/*Flight number 1001 flew from Las Vegas, NV (LAS), on Friday, March 19, 2021 at 18:50. Southwest  airlines' Embraer RJ-45, which was last serviced on Jan 17, 2021, was the aircraft used for the flight. The flight will arrive in Orlando, FL (MCO), on Friday, March 19, 2021 at 22:23.
 
 Flight number 1000 flew from Pittsburgh, PA (PIT), on Sunday, August 1, 2021 at 06:28. American airlines' Airbus A330, which was last serviced on Jan 23, 2021, was the aircraft used for the flight. The flight will arrive in Dallas-Fort Worth, TX (DFW), on Sunday, August 1, 2021 at 09:45.
 
@@ -118,4 +118,4 @@ Flight number 1000 flew from Pittsburgh, PA (PIT), onAug  1 2021  6:28AMAmerican
 
 
 
-Flight number 1000 flew from Pittsburgh, PA (PIT)Aug  1 2021  6:28AMAmericanAirbus A3302021-01-23Dallas-Fort Worth, TXDFWAug  1 2021  9:45AM
+Flight number 1000 flew from Pittsburgh, PA (PIT)Aug  1 2021  6:28AMAmericanAirbus A3302021-01-23Dallas-Fort Worth, TXDFWAug  1 2021  9:45AM*/

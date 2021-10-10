@@ -47,6 +47,7 @@ ORDER BY 3;
 
 
 --  A query that shows the seller's name and the number of titles that they sell but only include sellers that offer at least 10 different book titles
+
 -- Counting the primary key instead of booktile because we know it can not be null
 -- Cant use a where clase because we cant have a aggregate funtcion in a where. Use a "Having" that comes after the Group (a group has some condision)
 		--this is only used to filter the aggregate function 
