@@ -53,3 +53,11 @@ ON c.ParkID = p.ParkID
 WHERE c.SafetyStatus = 'Poor'
 GROUP BY p.ParkName;
 GO
+
+SELECT CONCAT(DATENAME(MONTH, RetiredDate), ' ', DAY(RetiredDate), ', ', YEAR(RetiredDate))
+FROM CoasterType;
+
+SELECT ct.CoasterTypeName, c.SafetyStatus
+FROM Coasters c JOIN CoasterType ct
+ON c.CoasterTypeID = ct.CoasterTypeID
+WHERE c.SafetyStatus = 'Poor';
