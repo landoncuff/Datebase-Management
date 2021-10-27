@@ -7,6 +7,8 @@ GO
 DROP TABLE Airlines;
 GO
 
+-- DDL Statements
+
 -- An airline is a commercial company offering flights to the public
 CREATE TABLE Airlines (
 	AirlineID INTEGER PRIMARY KEY IDENTITY(1,1),
@@ -47,6 +49,8 @@ CREATE TABLE Flights (
 	ArriveDateTime DATETIME
 );
 GO
+
+-- DML records:
 
 -- Adding records to the Airlines table
 INSERT INTO Airlines
