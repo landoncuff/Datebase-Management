@@ -46,11 +46,12 @@ WHERE ParkID IN (
 	WHERE SafetyStatus = 'Acceptable' OR SafetyStatus = 'Poor');
 
 
+-- Same as code above but using a JOIN when the test said not to
 
-SELECT p.ParkName, c.SafetyStatus
-FROM Parks p JOIN Coasters c
-ON p.ParkID = c.ParkID
-WHERE c.SafetyStatus = 'Acceptable' OR c.SafetyStatus = 'Poor';
+-- SELECT p.ParkName, c.SafetyStatus
+-- FROM Parks p JOIN Coasters c
+-- ON p.ParkID = c.ParkID
+-- WHERE c.SafetyStatus = 'Acceptable' OR c.SafetyStatus = 'Poor';
 
 SELECT ct.CoasterTypeName, COUNT(c.CoasterID) AS 'Amount of Coasters'
 FROM CoasterType ct LEFT JOIN Coasters c
