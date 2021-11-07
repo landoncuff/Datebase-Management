@@ -6,47 +6,56 @@ SELECT * FROM dwFlightFacts;
 SELECT * FROM dwPlanesDim;
 GO
 
--- Step 1
+-- STEP 1
 
 -- pulling information from the Airport table
-SELECT * FROM Airports;
+SELECT * FROM dwAirportsAgg;
 SELECT * FROM Flights;
 
+-- Creating the query first before making the Procedure statement
+-- We are needing to create two differnt subqueries in order to get the right info
 
-SELECT f.DepartCode, COUNT(a.AirportCode)
-FROM Flights f JOIN Airports a
-ON f.DepartCode = a.AirportCode
-GROUP BY f.DepartCode;
-
-SELECT f.ArriveCode, COUNT(a.AirportCode)
-FROM Flights f JOIN Airports a
-ON f.ArriveCode = a.AirportCode
-GROUP BY f.ArriveCode
-
-SELECT f.ArriveCode, COUNT(aa.AirportCode), f.DepartCode, COUNT(ad.AirportCode)
-FROM Flights f JOIN Airports aa
-ON f.ArriveCode = aa.AirportCode
-JOIN Airports ad 
-ON f.DepartCode = ad.AirportCode
-GROUP BY f.ArriveCode, f.DepartCode;
-
-
-
-SELECT COUNT(FlightID), ArriveCode
+-- Query getting the count of depart flights
+SELECT DepartCode, COUNT(FlightID)
 FROM Flights
-WHERE ArriveCode = 'MIA'
+GROUP BY DepartCode;
+
+-- query to get the count of arrive flights
+SELECT ArriveCode, COUNT(FlightID)
+FROM Flights
 GROUP BY ArriveCode;
 
+-- connecting the two quires to get the information 
+SELECT ArriveCode, d.DepartCount, a.ArriveCount
+FROM 
+	(SELECT DepartCode, COUNT(FlightID) AS DepartCount
+		FROM Flights
+		GROUP BY DepartCode) d JOIN
+	(SELECT ArriveCode, COUNT(FlightID) AS ArriveCount
+		FROM Flights
+		GROUP BY ArriveCode) a
+ON d.DepartCode = a.ArriveCode
+GROUP BY ArriveCode, d.DepartCount, a.ArriveCount;
 
-SELECT COUNT(FlightID), DepartCode
-FROM Flights
-WHERE DepartCode = 'MIA'
-GROUP BY DepartCode;
-GO
-
+-- creating the procedure statement
 CREATE PROC fillAirport
+-- ALTER PROC fillAirport
 AS
 BEGIN
+	DELETE FROM dwAirportsAgg
+
+	INSERT INTO dwAirportsAgg
+
+	SELECT ArriveCode, d.DepartCount, a.ArriveCount, getDate()
+	FROM 
+	(SELECT DepartCode, COUNT(FlightID) AS DepartCount
+		FROM Flights
+		GROUP BY DepartCode) d JOIN
+	(SELECT ArriveCode, COUNT(FlightID) AS ArriveCount
+		FROM Flights
+		GROUP BY ArriveCode) a
+	ON d.DepartCode = a.ArriveCode
+	GROUP BY ArriveCode, d.DepartCount, a.ArriveCount;
 END;
 GO
 
@@ -54,23 +63,33 @@ EXEC fillAirport;
 GO
 
 
+
+
 -- Step 2
 
 
 SELECT * FROM Planes;
-SELECT * FROM dwPlanesDim;
+GO
+SELECT * FROM dwPlanesDim
 GO
 
 
-CREATE PROC fillPlanes
-	(@LastSurviced INT, @SinceServiced INT)
+ALTER PROC fillPlanes
+	(@NeedsService INT, @CantFly INT)
 AS 
 BEGIN
+		DELETE FROM dwPlanesDim
 
-		
-		SELECT PlaneID, Manufacturer, Model, PurchaseDate,NumberOfSeats, LastServiceDate, NULL, getDate()
+		INSERT INTO dwPlanesDim
+
+		SELECT PlaneID, Manufacturer, Model, PurchaseDate, NumberOfSeats, LastServiceDate, 
+		IIF(DATEDIFF(DAY, LastServiceDate, getDate()) < @NeedsSevice, 'Current', 
+		IIF(DATEDIFF(DAY, LastServiceDate, getDate()) < @CantFly, 'Service Soon', 'Can''t Fly Until Serviced')), getDate()
 		FROM Planes;
 END;
+GO
+
+EXEC fillPlanes @NeedsService = 70, @CantFly = 300;
 GO
 
 
@@ -92,3 +111,54 @@ GO
 
 EXEC fillAirlines;
 GO
+
+-- STEP 4
+
+SELECT * FROM dwDateDim;
+GO
+
+ALTER PROC fillDate
+AS
+BEGIN
+ DECLARE @StartDate DATETIME = '1/1/2020 00:00:00';
+ DECLARE @EndDate DATETIME = '12/31/2021 24:00:00';
+
+ WHILE DATENAME(HOUR, @StartDate) <= DATENAME(HOUR, @EndDate)
+	BEGIN
+		INSERT INTO dwDateDim
+		VALUES(
+		getDate(),
+		DATENAME(HOUR, @StartDate),
+		DATENAME(WEEKDAY, @StartDate),
+		DATENAME(MONTH, @StartDate),
+		CONCAT('Q', DATEPART(QUARTER, @StartDate), '-', YEAR(@StartDate)),
+		YEAR(@StartDate),
+		getDate())
+
+		SET @StartDate = DATEADD(HOUR, 1, @StartDate)
+	END;
+END;
+GO
+
+EXEC fillDate;
+GO
+
+-- STEP 5
+
+
+SELECT * FROM dwFlightFacts
+SELECT * FROM Flights
+GO
+
+
+CREATE PROC fillFlightFact
+AS
+BEGIN
+	INSERT INTO dwFlightFacts
+	
+	SELECT FlightID, PlaneID, AirlineID, DepartCode, ArriveCode, NULL, NULL, DepartDateTime, ArriveDateTime, getDate()
+	FROM Flights
+END;
+GO
+
+EXEC fillFlightFact

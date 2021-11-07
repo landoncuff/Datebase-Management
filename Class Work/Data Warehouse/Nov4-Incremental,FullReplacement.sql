@@ -66,7 +66,7 @@ GO
 
 -- run fillRevenue to update book sale totals
 EXEC fillRevenue;
-GO
+
 
 
 -- Stored Procdure to fill up the sales facts table, with no updates (for now)
