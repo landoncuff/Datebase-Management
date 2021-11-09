@@ -42,6 +42,10 @@ CREATE PROC fillAirport
 -- ALTER PROC fillAirport
 AS
 BEGIN
+	ALTER dwFlightFacts
+	NOCHECK CONSTRAINT FK__dwFlightF__Desti__49C3F6B7;
+	NOCHECK CONSTRAINT FK__dwFlightF__Origi__48CFD27E;
+
 	DELETE FROM dwAirportsAgg
 
 	INSERT INTO dwAirportsAgg
@@ -56,6 +60,11 @@ BEGIN
 		GROUP BY ArriveCode) a
 	ON d.DepartCode = a.ArriveCode
 	GROUP BY ArriveCode, d.DepartCount, a.ArriveCount;
+
+	ALTER dwFlightFacts
+	CHECK CONSTRAINT FK__dwFlightF__Desti__49C3F6B7;
+	CHECK CONSTRAINT FK__dwFlightF__Origi__48CFD27E;
+	
 END;
 GO
 
@@ -78,14 +87,20 @@ ALTER PROC fillPlanes
 	(@NeedsService INT, @CantFly INT)
 AS 
 BEGIN
+		ALTER FROM dwFlightFacts
+		NOCHECK CONSTRAINT FK__dwFlightF__Plane__45F365D3;
+
 		DELETE FROM dwPlanesDim
 
 		INSERT INTO dwPlanesDim
 
 		SELECT PlaneID, Manufacturer, Model, PurchaseDate, NumberOfSeats, LastServiceDate, 
-		IIF(DATEDIFF(DAY, LastServiceDate, getDate()) < @NeedsSevice, 'Current', 
-		IIF(DATEDIFF(DAY, LastServiceDate, getDate()) < @CantFly, 'Service Soon', 'Can''t Fly Until Serviced')), getDate()
+		IIF(DATEDIFF(DAY, LastServiceDate, getDate())) < @NeedsSevice, 'Current', 
+		IIF(DATEDIFF(DAY, LastServiceDate, getDate())) < @CantFly, 'Service Soon', 'Can''t Fly Until Serviced')), getDate()
 		FROM Planes;
+
+		ALTER FROM dwFlightFacts
+		CHECK CONSTRAINT FK__dwFlightF__Plane__45F365D3;
 END;
 GO
 
