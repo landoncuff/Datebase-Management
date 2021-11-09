@@ -43,27 +43,27 @@ CREATE PROC fillAirport
 AS
 BEGIN
 	ALTER dwFlightFacts
-	NOCHECK CONSTRAINT FK__dwFlightF__Desti__49C3F6B7;
-	NOCHECK CONSTRAINT FK__dwFlightF__Origi__48CFD27E;
+	NOCHECK CONSTRAINT FK__dwFlightF__Desti__49C3F6B7, 
+	FK__dwFlightF__Origi__48CFD27E;
 
 	DELETE FROM dwAirportsAgg
 
 	INSERT INTO dwAirportsAgg
 
-	SELECT ArriveCode, d.DepartCount, a.ArriveCount, getDate()
+	SELECT a.ArriveCode, d.DepartCount, a.ArriveCount, getDate()
 	FROM 
-	(SELECT DepartCode, COUNT(FlightID) AS DepartCount
-		FROM Flights
-		GROUP BY DepartCode) d JOIN
-	(SELECT ArriveCode, COUNT(FlightID) AS ArriveCount
-		FROM Flights
-		GROUP BY ArriveCode) a
+		(SELECT DepartCode, COUNT(FlightID) AS DepartCount
+			FROM Flights
+			GROUP BY DepartCode) d JOIN
+		(SELECT ArriveCode, COUNT(FlightID) AS ArriveCount
+			FROM Flights
+			GROUP BY ArriveCode) a
 	ON d.DepartCode = a.ArriveCode
-	GROUP BY ArriveCode, d.DepartCount, a.ArriveCount;
+	GROUP BY a.ArriveCode, d.DepartCount, a.ArriveCount;
 
 	ALTER dwFlightFacts
-	CHECK CONSTRAINT FK__dwFlightF__Desti__49C3F6B7;
-	CHECK CONSTRAINT FK__dwFlightF__Origi__48CFD27E;
+	CHECK CONSTRAINT FK__dwFlightF__Desti__49C3F6B7,
+	FK__dwFlightF__Origi__48CFD27E;
 	
 END;
 GO
@@ -135,14 +135,16 @@ GO
 ALTER PROC fillDate
 AS
 BEGIN
- DECLARE @StartDate DATETIME = '1/1/2020 00:00:00';
- DECLARE @EndDate DATETIME = '12/31/2021 24:00:00';
-
- WHILE DATENAME(HOUR, @StartDate) <= DATENAME(HOUR, @EndDate)
+-- dont have to set the time because it defaults at 00:00:0000 (Midnight)
+ DECLARE @StartDate DATETIME = '1/1/2020';
+ -- dont have to set the time because it defaults at 00:00:0000 (Midnight)
+ DECLARE @EndDate DATETIME = '1/1/2022';
+-- dont make it less than or equal because we dont have the 1 of January 2022
+ WHILE @StartDate < @EndDate
 	BEGIN
 		INSERT INTO dwDateDim
 		VALUES(
-		getDate(),
+		@StartDate,
 		DATENAME(HOUR, @StartDate),
 		DATENAME(WEEKDAY, @StartDate),
 		DATENAME(MONTH, @StartDate),
