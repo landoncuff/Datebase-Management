@@ -11,6 +11,7 @@ CREATE TABLE dwProductDim (
     ProdName VARCHAR(30),
     QuantityPerProduct INT,
     ProductPrice MONEY,
+    ProductDiscontinued BIT,
     RecTimestamp DATETIME
 )
 
@@ -20,18 +21,19 @@ CREATE TABLE dwDateDim (
     DayOfTheWeek VARCHAR(9),
     MonthOfTheYear VARCHAR(9),
     QuarterOfTheYear CHAR(7),
-    YaerOfOrder INT,
+    YearOfOrder INT,
     RecTimestamp DATETIME
 )
 
 CREATE TABLE dwSupplierDim (
-    SupplierID INT PRIMARY KEY,
+    SuppliersID INT PRIMARY KEY,
     CompanyName VARCHAR(20),
+    CompanyAddress VARCHAR(50),
     RecTimestamp DATETIME
 )
 
 CREATE TABLE dwEmployeesDim (
-    EmployeeID INT PRIMARY KEY,
+    EmpID INT PRIMARY KEY,
     EmpLName VARCHAR(15),
     EmpFName VARCHAR(15),
     RecTimestamp DATETIME
@@ -39,10 +41,11 @@ CREATE TABLE dwEmployeesDim (
 
 CREATE TABLE dwOrderFact (
     OrderID INT PRIMARY KEY,
-    OrderDate DATETIME,
+    FOREIGN KEY (DateID) REFERENCES dwDateDim(DateID),
     FOREIGN KEY (CustomerID) REFERENCES dwCustomerDim(CustomerID),
     FOREIGN KEY (ProductID) REFERENCES dwProductDim(ProductID),
-    FOREIGN KEY (SupplierID) REFERENCES dwSupplierDim(SupplierID),
-    FOREIGN KEY (EmployeeID) REFERENCES dwEmployeesDim(EmployeeID),
+    FOREIGN KEY (SuppliersID) REFERENCES dwSupplierDim(SuppliersID),
+    FOREIGN KEY (EmpID) REFERENCES dwEmployeesDim(EmpID),
+    OrderDate DATETIME,
     RecTimestamp DATETIME
 )
