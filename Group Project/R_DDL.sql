@@ -35,8 +35,6 @@ CREATE TABLE Products (
     CategoryID INT REFERENCES Categories (CategoryID),
     QuantityPerProduct INT,
     ProductPrice MONEY,
-    -- ProductInStock what should we do about this? Not use it?
-    -- ProductOnOrder
     ProductDiscontinued BIT
 )
 
@@ -44,7 +42,8 @@ CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
     CustFName VARCHAR(15),
     CustLName VARCHAR(15),
-    CustAddress VARCHAR(50),
+    CustAddress VARCHAR(20),
+    CustState CHAR(2),
     CustPhone CHAR(14)
 )
 
@@ -60,6 +59,6 @@ CREATE TABLE Orders (
 CREATE TABLE ProductOrder (
     OrderID INT REFERENCES Orders (OrderID),
     ProductID INT REFERENCES Products (ProductID),
-    PRIMARY KEY (OrderID, ProductID)
+    PRIMARY KEY (OrderID, ProductID),
     ProductQuantity INT
 )
