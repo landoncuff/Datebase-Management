@@ -19,7 +19,9 @@ CREATE TABLE Employees (
     EmpFName VARCHAR(15),
     EmpBirthDate DATE, 
     EmpPhoneNum CHAR(12),
-    EmpAddress VARCHAR(50)
+    EmpAddress VARCHAR(50),
+    EmpHireDate DATETIME,
+    EmpExitDate DATETIME
 )
 
 CREATE TABLE Shippers (

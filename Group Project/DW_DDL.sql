@@ -6,9 +6,11 @@ CREATE TABLE dwCustomerDim (
     RecTimestamp DATETIME
 )
 
-CREATE TABLE dwProductDim (
-    ProductID INT PRIMARY KEY,
-    ProdName VARCHAR(30),
+CREATE TABLE dwOrderProductDim (
+    OrderID INT REFERENCES Orders (OrderID),
+    ProductID INT REFERENCES Products (ProductID),
+    PRIMARY KEY (OrderID, ProductID),
+    ProdName VARCHAR(50),
     QuantityPerProduct INT,
     ProductPrice MONEY,
     ProductDiscontinued BIT,
