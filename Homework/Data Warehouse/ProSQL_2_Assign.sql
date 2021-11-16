@@ -94,10 +94,13 @@ ALTER TRIGGER PlanesLastServiceDateChange ON Planes
 AFTER UPDATE 
 AS 
 BEGIN
+	DECLARE @NewLastServiceDate DATE;
+	SELECT @NewLastServiceDate = LastServiceDate 
+	FROM INSERTED;
+
 	UPDATE dwPlanesDim
-	SET LastService = (SELECT LastService FROM INSERTED),
-				ServiceStatus = IIF(DATEDIFF(DAY, LastService, getDate()) < 45, 'Current', 
-					IIF(DATEDIFF(DAY, LastService, getDate()) > 45, 'Review Service', 'Can''t Fly Until Serviced'))
+	SET LastService = @NewLastServiceDate,
+				ServiceStatus = IIF(DATEDIFF(DAY, @NewLastServiceDate, getDate()) <= 45, 'Current', 'Review Service')
 	WHERE PlaneID IN (SELECT PlaneID FROM INSERTED)
 END;
 GO
@@ -118,6 +121,6 @@ WHERE PlaneID = 107;
 
 -- STEP 5
 
-SELECT PlaneID, ServiceStatus
+SELECT PlaneID, ServiceStatus, LastService
 FROM dwPlanesDim
 WHERE PlaneID = 100 OR PlaneID = 107;
