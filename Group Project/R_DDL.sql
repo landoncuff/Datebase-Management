@@ -4,7 +4,9 @@ CREATE TABLE Suppliers (
     SupplContactName VARCHAR(25),
     SuppContactTitle VARCHAR(15), 
     CompanyPhone CHAR(12),
-    CompanyAddress VARCHAR(50)
+    CompanyCity VARCHAR(25),
+    CompanyState CHAR(2),
+    CompanyZip CHAR(5)
 )
 
 CREATE TABLE Categories (
@@ -19,9 +21,11 @@ CREATE TABLE Employees (
     EmpFName VARCHAR(15),
     EmpBirthDate DATE, 
     EmpPhoneNum CHAR(12),
-    EmpAddress VARCHAR(50),
     EmpHireDate DATETIME,
-    EmpExitDate DATETIME
+    EmpExitDate DATETIME,
+    EmpCity VARCHAR(25),
+    EmpState CHAR(2),
+    EmpZip CHAR(5)
 )
 
 CREATE TABLE Shippers (
@@ -44,14 +48,15 @@ CREATE TABLE Customers (
     CustomerID INT IDENTITY(1,1) PRIMARY KEY,
     CustFName VARCHAR(15),
     CustLName VARCHAR(15),
-    CustAddress VARCHAR(20),
+    CustPhone CHAR(14),
+    CustCity VARCHAR(25),
     CustState CHAR(2),
-    CustPhone CHAR(14)
+    CustZip CHAR(5)
 )
 
 CREATE TABLE Orders (
     OrderID INT IDENTITY(1,1) PRIMARY KEY,
-    CustomerID INT REFERENCES customers (CustomerID)
+    CustomerID INT REFERENCES customers (CustomerID),
     EmpID INT REFERENCES Employees (EmpID),
     OrderDate DATETIME,
     OrderShippedBy INT REFERENCES Shippers (ShippersID)

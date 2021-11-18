@@ -2,13 +2,13 @@ CREATE TABLE dwCustomerDim (
     CustomerID INT PRIMARY KEY,
     CustFName VARCHAR(15),
     CustLName VARCHAR(15),
-    CustAddress VARCHAR(50),
+    CustCity VARCHAR(25),
+    CustState CHAR(2),
+    CustZip CHAR(5),
     RecTimestamp DATETIME
 )
 
 CREATE TABLE dwOrderProductDim (
-    OrderID INT REFERENCES Orders (OrderID),
-    ProductID INT REFERENCES Products (ProductID),
     PRIMARY KEY (OrderID, ProductID),
     ProdName VARCHAR(50),
     QuantityPerProduct INT,
@@ -30,7 +30,9 @@ CREATE TABLE dwDateDim (
 CREATE TABLE dwSupplierDim (
     SuppliersID INT PRIMARY KEY,
     CompanyName VARCHAR(20),
-    CompanyAddress VARCHAR(50),
+    CompanyCity VARCHAR(25),
+    CompanyState CHAR(2),
+    CompanyZip CHAR(5),
     RecTimestamp DATETIME
 )
 
@@ -41,13 +43,24 @@ CREATE TABLE dwEmployeesDim (
     RecTimestamp DATETIME
 )
 
+CREATE TABLE dwProductTotalAgg (
+    StateID CHAR(2) PRIMARY KEY,
+    TotalProducts INT,
+    RecTimestamp DATETIME
+)
+
 CREATE TABLE dwOrderFact (
     OrderID INT PRIMARY KEY,
-    FOREIGN KEY (DateID) REFERENCES dwDateDim(DateID),
-    FOREIGN KEY (CustomerID) REFERENCES dwCustomerDim(CustomerID),
-    FOREIGN KEY (ProductID) REFERENCES dwProductDim(ProductID),
-    FOREIGN KEY (SuppliersID) REFERENCES dwSupplierDim(SuppliersID),
-    FOREIGN KEY (EmpID) REFERENCES dwEmployeesDim(EmpID),
+	DateID INT,
+	CustomerID INT,
+	StateName CHAR(2),
+	SuppliersID INT,
+	EmpID INT,
     OrderDate DATETIME,
-    RecTimestamp DATETIME
+    RecTimestamp DATETIME,
+	FOREIGN KEY (DateID) REFERENCES dwDateDim(DateID),
+    FOREIGN KEY (CustomerID) REFERENCES dwCustomerDim(CustomerID),
+    FOREIGN KEY (StateName) REFERENCES dwProductTotalAgg(StateID),
+    FOREIGN KEY (SuppliersID) REFERENCES dwSupplierDim(SuppliersID),
+    FOREIGN KEY (EmpID) REFERENCES dwEmployeesDim(EmpID)
 )
