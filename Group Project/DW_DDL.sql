@@ -29,7 +29,7 @@ CREATE TABLE dwDateDim (
 
 CREATE TABLE dwSupplierDim (
     SuppliersID INT PRIMARY KEY,
-    CompanyName VARCHAR(20),
+    CompanyName VARCHAR(25),
     CompanyCity VARCHAR(25),
     CompanyState CHAR(2),
     CompanyZip CHAR(5),

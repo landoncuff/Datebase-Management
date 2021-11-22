@@ -34,7 +34,7 @@ CREATE TABLE dwAirportsAgg (
 	TotalFlightsDeparting INT,
 	TotalFlightsArriving INT,
 	RecTimestamp DATETIME
-);
+	);
 GO
 
 CREATE TABLE dwFlightFacts (
@@ -54,5 +54,5 @@ CREATE TABLE dwFlightFacts (
 	 FOREIGN KEY (DepartureDateID) REFERENCES dwDateDim(DateID),
 	 FOREIGN KEY (OriginAirport) REFERENCES dwAirportsAgg(AirportCode),
 	 FOREIGN KEY (DestinationAirport) REFERENCES dwAirportsAgg(AirportCode)
-);
+	);
 GO
