@@ -25,7 +25,7 @@ GO
 SELECT * FROM dwDateDim;
 GO
 
-CREATE FUNCTION GetDepartArriveDateID
+ALTER FUNCTION GetDepartArriveDateID
 	(@DateDepart DATETIME)
 		RETURNS INT
 AS
@@ -33,7 +33,7 @@ BEGIN
 	DECLARE @DateID INT;
 	SELECT @DateID = DateID
     FROM dwDateDim 
-    WHERE RawDate = CONVERT(Date, @DateDepart, 101)
+    WHERE RawDate = CONVERT(Date, @DateDepart, 101) AND HourOfTheDay = DATEPART(HOUR, @DateDepart) 
 	
 	RETURN @DateID;
 END;
@@ -79,15 +79,16 @@ BEGIN
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			SELECT @UpdatedFlightID = FlightID, @PlaneID = PlaneID, @AirlineID = AirlineID, @DepartCode = DepartCode, @ArriveCode = ArriveCode, @DepartDate = DepartDateTime,
+			SELECT @PlaneID = PlaneID, @AirlineID = AirlineID, @DepartCode = DepartCode, @ArriveCode = ArriveCode, @DepartDate = DepartDateTime,
 			@ArrivedDate = ArriveDateTime
-			FROM Flights;
+			FROM Flights
+			WHERE FlightID = @NewFlight;
 
 			UPDATE dwFlightFacts
 			SET PlaneID = @PlaneID, AirlineID = @AirlineID, OriginAirport = @DepartCode, DestinationAirport = @ArriveCode, 
 			DepartureDateID = dbo.GetDepartArriveDateID(@DepartDate), ArrivalDateID = dbo.GetDepartArriveDateID(@ArrivedDate), DepartureDateTime = @DepartDate, 
 			ArrivalDateTime = @ArrivedDate, RecTimestamp = getDate(), ChangeAudit = 'Updated'
-			WHERE FlightID = @UpdatedFlightID
+			WHERE FlightID = @NewFlight;
 
 			FETCH NEXT FROM MyFlightList INTO @NewFlight
 		END; 
