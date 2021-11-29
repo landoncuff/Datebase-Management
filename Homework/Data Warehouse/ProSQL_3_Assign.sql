@@ -68,7 +68,7 @@ ALTER PROC updateFlightFact
 AS
 BEGIN
 
-	DECLARE @UpdatedFlightID INT, @PlaneID INT, @AirlineID INT, @DepartCode CHAR(3), @ArriveCode CHAR(3), @DepartDate DATETIME, @ArrivedDate DATETIME, @NewFlight INT;
+	DECLARE @PlaneID INT, @AirlineID INT, @DepartCode CHAR(3), @ArriveCode CHAR(3), @DepartDate DATETIME, @ArrivedDate DATETIME, @NewFlight INT;
 	
 	DECLARE MyFlightList CURSOR FOR 
 	SELECT FlightID FROM dwFlightFacts WHERE ChangeAudit = 'Need Update';
