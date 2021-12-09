@@ -225,17 +225,12 @@ GO
 ALTER PROC fillOrderProducts
 AS
 BEGIN
-	ALTER TABLE dwOrderFact
-	NOCHECK CONSTRAINT PK__dwOrderF__C3905BAF8EE21D24
 	
-	DELETE FROM dwOrderProductDim;
 	INSERT INTO dwOrderProductDim	
 	SELECT o.OrderID, p.ProductID, p.ProdName, p.QuantityPerProduct, p.ProductPrice, p.ProductDiscontinued, getDate()
 	FROM Products p JOIN ProductOrder o
-	ON p.ProductID = o.ProductID;
-
-	ALTER TABLE dwOrderFact
-	CHECK CONSTRAINT PK__dwOrderF__C3905BAF8EE21D24
+	ON p.ProductID = o.ProductID
+	WHERE o.OrderID NOT IN (SELECT OrderID FROM dwOrderProductDim);
 END;
 GO
 
