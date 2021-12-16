@@ -6,7 +6,7 @@ SELECT * FROM dwFlightFacts;
 SELECT * FROM dwPlanesDim;
 GO
 
--- STEP 1
+-- /* STEP 1: . Write a stored procedure that will populate the dwAirportsAgg data warehouse table with full replacement updates each time the procedure is run. Include an EXEC statement for your procedure. (Hint: Try using subqueries to create and join two derived tables with counts for arrivals in one and counts for departures in the other.) */
 
 -- pulling information from the Airport table
 SELECT * FROM dwAirportsAgg;

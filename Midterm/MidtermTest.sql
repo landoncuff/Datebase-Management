@@ -40,7 +40,7 @@ WHERE 
 
 SELECT ParkName 
 FROM Parks
-WHERE ParkID IN (
+WHERE ParkID NOT IN (
 	SELECT ParkID
 	FROM Coasters
 	WHERE SafetyStatus = 'Acceptable' OR SafetyStatus = 'Poor');
