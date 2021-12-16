@@ -9,7 +9,7 @@ INSERT INTO CoasterType
 VALUES('Jones'' Lapbar', '3/1/1948');
 
 SELECT r.CoasterTypeName, COUNT(c.CoasterID) AS 'Number of Coasters', IIF(COUNT(c.CoasterID) > 8, 'Many Coasters', 'Few Coasters') AS 'Coaster Def'
-FROM Coasters c RIGHT JOIN CoasterType r 
+FROM Coasters c RIGHT JOIN CoasterType r
 ON c.CoasterTypeID = r.CoasterTypeID
 GROUP BY r.CoasterTypeName
 ORDER BY 2 DESC;

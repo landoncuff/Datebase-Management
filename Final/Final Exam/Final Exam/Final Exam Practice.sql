@@ -64,3 +64,58 @@ FROM Movies m JOIN Ratings r
 ON m.RatingID = r.RatingID
 WHERE m.MovieTitle = 'City of God';
 
+
+-- Creating a cursor to get a list of actors for each movie
+ALTER TABLE Movies
+ADD ActorList VARCHAR(200);
+
+SELECT * FROM Movies;
+SELECT * FROM Actors;
+GO
+
+-- passing in a movie to get an actor
+				-- we are not passing in an actor to get a movie
+CREATE FUNCTION ActorListMovie
+	(@MovieID INT)
+		RETURNS VARCHAR(200)
+AS
+BEGIN
+	DECLARE @ActorList VARCHAR(200), @ActorName VARCHAR(35), @ActID INT, @ActorID INT;
+
+	SELECT @MovieID = MovieID
+	FROM Movies
+	WHERE MovieID = @MovieID;
+
+	DECLARE actorMovieList CURSOR FOR
+	SELECT ActorID FROM MovieActors WHERE MovieID = @MovieID
+
+	OPEN actorMovieList
+
+	-- getting the IDs of the movie
+	FETCH NEXT FROM actorMovieList INTO @ActorID
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			SELECT @ActorName = ActorName
+			FROM Actors
+			WHERE ActorID = @ActorID;
+
+			IF @ActorList IS NULL
+				SET @ActorList = @ActorName
+			ELSE 
+				SET @ActorList = CONCAT(@ActorList, ', ', @ActorName)
+-- Fetching the next ID
+			FETCH NEXT FROM actorMovieList INTO @ActorID
+		END;
+
+		RETURN @ActorList
+END;
+GO
+
+SELECT *, dbo.ActorListMovie(MovieID)
+FROM Movies;
+
+UPDATE Movies
+SET ActorList = dbo.ActorListMovie(MovieID);
+
+SELECT * FROM Movies;
+

@@ -106,7 +106,7 @@ BEGIN
     
     OPEN NeedUpdateFlights
     -- 3.
-        FETCH NEXT FROM NeedUpdateFlights INT @UpFlightID
+        FETCH NEXT FROM NeedUpdateFlights INTO @UpFlightID
         WHILE @@FETCH_STATUS = 0
         BEGIN
             -- 4. 
